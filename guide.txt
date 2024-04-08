@@ -1,0 +1,32 @@
+Un file ELF (Executable and Linkable Format) è un tipo di formato di file utilizzato principalmente su sistemi Unix e Unix-like per eseguibili, librerie condivise e oggetti compilati. I campi di un file ELF forniscono informazioni importanti sulla struttura e sull'utilizzo del file. Ecco una spiegazione dei campi principali di un file ELF:
+
+    ELF Header (Intestazione ELF):
+        L'intestazione ELF è la prima parte di un file ELF e contiene informazioni di base sul file stesso, come il tipo di file,
+	l'architettura del processore per cui è stato compilato il file, la versione del formato ELF utilizzata 
+	e l'offset (posizione nel file) delle altre strutture principali.
+    
+    Section Header Table (Tabella degli header delle sezioni):
+        La tabella degli header delle sezioni contiene informazioni su ciascuna sezione presente nel file ELF.
+	Ogni riga di questa tabella corrisponde a una sezione e contiene informazioni come il nome della sezione, il tipo di dati contenuti nella sezione (ad esempio codice, dati, simboli), l'offset (posizione nel file) e la dimensione della sezione.
+
+    Program Header Table (Tabella degli header dei programmi):
+        La tabella degli header dei programmi contiene informazioni sui segmenti del programma. A differenza delle sezioni, 
+        i segmenti del programma sono blocchi di dati che vengono caricati in memoria durante l'esecuzione del programma. 
+        Ogni riga di questa tabella contiene informazioni come il tipo di segmento, i permessi di accesso, l'indirizzo virtuale in cui il segmento deve essere 
+        caricato in memoria, l'offset nel file e la dimensione del segmento.
+
+    Sections (Sezioni):
+        Le sezioni sono blocchi di dati all'interno del file ELF che organizzano il codice, i dati e le informazioni di collegamento. 
+	Le sezioni possono includere codice eseguibile, dati inizializzati e non inizializzati, tabelle di simboli, informazioni di debug e altro ancora.
+
+    Segments (Segmenti):
+        I segmenti sono blocchi di dati utilizzati dal loader del sistema operativo per caricare e gestire l'esecuzione del programma in memoria. 
+	I segmenti corrispondono a regioni di memoria con permessi specifici (ad esempio, permessi di esecuzione, scrittura o lettura).
+
+    Symbol Table (Tabella dei simboli):
+        La tabella dei simboli contiene informazioni sui simboli definiti nel file ELF, come nomi, tipi (funzione, variabile, sezione, ecc.), valori (indirizzi) 
+	e altre informazioni utili per il collegamento e il debug del programma.
+
+    String Table (Tabella delle stringhe):
+        La tabella delle stringhe è una sezione speciale che contiene le stringhe utilizzate dai vari campi del file ELF, come i nomi delle sezioni, 
+	i nomi dei simboli e altri metadati. Questa tabella consente di evitare la duplicazione di stringhe e facilita l'accesso a esse attraverso gli indici.
