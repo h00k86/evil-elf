@@ -2,6 +2,7 @@
 a framework for elf file
 based on 
 
+
 # TODO
 ## [] elf header
 ## [] section header
@@ -10,3 +11,8 @@ based on
 ## [] segment
 ## [] symbol table
 ## [] string table
+
+
+
+# FEATURES
+## inject code
