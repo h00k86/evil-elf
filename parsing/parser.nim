@@ -1,8 +1,8 @@
 
 import std/parseopt
 import os
-
-
+import elf_parser
+import ../core/header
 type 
  ParserObj = object
   filename:string
@@ -12,7 +12,7 @@ type
   check_section_header:bool
 
 proc help() =
- echo """Usage: evil-elf [OPTION] ... elf-file
+ echo """Usage: evil-elf [OPTION] ... -f:elf-file
 	 Display information about the contents of ELF format files
 	 For short option use -key:value 
 	 For long option use --key value
@@ -59,7 +59,10 @@ proc init(par:ParserObj)=
   file_segment()
  if param.check_section_header:
   file_section()
-
+ 
+ var ELFH:ELF_Header
+ ELFH = elf_parser(param.filename)
+ echo ELFH.e_ident
 proc parse_input*() =
  var param:ParserObj
  var p = initOptParser()
