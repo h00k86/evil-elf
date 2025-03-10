@@ -1,15 +1,17 @@
 
+import strutils
+
 import std/parseopt
 import os
 import elf_parser
 import ../core/header
-type 
+type
  ParserObj = object
-  filename:string
-  all:bool
-  check_file_header:bool
-  check_segment_header:bool
-  check_section_header:bool
+  filename: string
+  all: bool
+  check_file_header: bool
+  check_segment_header: bool
+  check_section_header: bool
 
 proc help() =
  echo """Usage: evil-elf [OPTION] ... -f:elf-file
@@ -27,62 +29,77 @@ proc help() =
 
 
 
-proc version()=
+proc version() =
  echo "version"
 
 
-proc file_header()=
+proc file_header() =
  echo "file header information"
 
-proc file_segment()=
+proc file_segment() =
  echo "file segment information"
 
-proc file_section()=
+proc file_section() =
  echo "file section information"
 
-proc check_filename(filename:string)=
+proc check_filename(filename: string) =
  if not fileExists(filename):
   echo "please provide a valid elf file"
   quit(80)
 
-proc init(par:ParserObj)=
- 
- var param=par
+proc init(par: ParserObj) =
+
+ var param = par
  check_filename(param.filename)
  if param.all:
-  param.check_file_header=true
-  param.check_segment_header=true
-  param.check_section_header=true
+  param.check_file_header = true
+  param.check_segment_header = true
+  param.check_section_header = true
  if param.check_file_header:
   file_header()
  if param.check_segment_header:
   file_segment()
  if param.check_section_header:
   file_section()
+
+ var ehdr: ELF_Header
+ ehdr = elf_parser(param.filename)
  
- var ELFH:ELF_Header
- ELFH = elf_parser(param.filename)
- echo ELFH.e_ident
+ var ELFPHDR: seq[Elf64Phdr]
+ ELFPHDR = readProgramHeaders(param.filename, ehdr.e_phoff, ehdr.e_phnum, ehdr.e_phentsize)
+ 
+ for ph in ELFPHDR:
+    echo ph
+    echo "  Type: 0x", toHex(ph.p_type)
+    echo "  Offset: 0x", toHex(ph.p_offset)
+    echo "  Virtual Address: 0x", toHex(ph.p_vaddr)
+    echo "  Physical Address: 0x", toHex(ph.p_paddr)
+    echo "  File Size: 0x", toHex(ph.p_filesz)
+    echo "  Memory Size: 0x", toHex(ph.p_memsz)
+    echo "  Flags: 0x", toHex(ph.p_flags)
+    echo "  Align: 0x", toHex(ph.p_align)
+    echo ""
+
 proc parse_input*() =
- var param:ParserObj
+ var param: ParserObj
  var p = initOptParser()
- for kind,key,val in p.getopt():
+ for kind, key, val in p.getopt():
   case kind
   of cmdArgument:
    discard
-  of cmdLongOption,cmdShortOption:
+  of cmdLongOption, cmdShortOption:
    case key
-   of "help","H":
+   of "help", "H":
     help()
     quit(0)
-   of "version","V":
+   of "version", "V":
     version()
     quit(0)
-   of "filename","f": param.filename=val
-   of "all","a":param.all=true
-   of "file-header","h" :param.check_file_header = true
-   of "segments"   ,"l" :param.check_segment_header = true
-   of "sections"   ,"s" :param.check_section_header = true
+   of "filename", "f": param.filename = val
+   of "all", "a": param.all = true
+   of "file-header", "h": param.check_file_header = true
+   of "segments", "l": param.check_segment_header = true
+   of "sections", "s": param.check_section_header = true
   of cmdEnd: discard
  init(param)
- 
+
